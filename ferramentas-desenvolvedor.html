@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>Ferramentas</title>
+	</head>
+
+	<body>
+		<div class="menu-horizontal">
+			<a class="menu-ativo" onclick="abrirFuncionalidade(this, 'base64-codificar-decodificar')">Base 64</a>
+			<a onclick="abrirFuncionalidade(this, 'base64-decodificar-arquivo')">Base 64 - Arquivo</a>
+			<a onclick="abrirFuncionalidade(this, 'arquivo-para-base64')">Arquivo - Base 64</a>
+			<a onclick="abrirFuncionalidade(this, 'json-beautify')">JSON Beautify</a>
+			<a onclick="abrirFuncionalidade(this, 'xml-beautify')">XML Beautify</a>
+		</div>
+
+		<div id="base64-codificar-decodificar" class="is-visible funcionalidade-container">
+			<h1>Base 64</h1>
+
+			<div class="textarea-copiar-div">
+				<textarea id="ipt-codificar" placeholder="Codificar" name="Codificar" rows="10"
+					class="textarea-copiar"></textarea>
+				<button onclick="clickCopiarToClipboard(this)" class="btn-textarea">Copiar</button>
+			</div>
+
+			</br>
+			<input type="checkbox" id="UTF-8" name="UTF-8" checked style="margin-top: 20px; margin-bottom: 10px;"/>
+    		<label for="UTF-8">Converter em UTF-8</label>
+
+			</br>
+			<div>
+				<button onclick="clickCodificar()">Codificar</button>
+				<button onclick="clickDecodificar()">Decodificar</button>
+			</div>
+			</br>
+
+			<div class="textarea-copiar-div">
+				<textarea id="ipt-decodificar" placeholder="Decodificar" name="Decodificar" rows="10"
+					class="textarea-copiar"></textarea>
+				<button onclick="clickCopiarToClipboard(this)" class="btn-textarea">Copiar</button>
+			</div>
+		</div>
+
+		<div id="base64-decodificar-arquivo" class="funcionalidade-container" hidden>
+			<h1>Base 64 para Arquivo</h1>
+
+			<textarea id="ipt-arquivo-base64" placeholder="Decodificar Arquivo" rows="10"></textarea>
+
+			</br>
+			<div style="text-align: center;">
+				<div style="display: inline-block; text-align: left;">
+					Nome: <input id="ipt-nome-arquivo-base64" placeholder="arquivo" style="margin-top: 10px;">
+					</br>
+					Formato: <input id="ipt-formato-arquivo-base64" style="margin-top: 10px;" placeholder="pdf">
+				</div>
+			</div>
+
+			<button onclick="clickBase64ToArquivo()" style="margin-top: 20px; margin-bottom: 20px;">Baixar
+				Arquivo</button>
+			</br>
+		</div>
+
+		<div id="arquivo-para-base64" class="funcionalidade-container" hidden>
+			<h1>Arquivo para Base 64</h1>
+
+			<input id="ipt-arquivo-para-base64" type="file" style="margin-top: 10px;">
+
+			</br>
+			<button onclick="clickArquivoToBase64()" style="margin-top: 20px; margin-bottom: 20px;">Converter
+				arquivo</button>
+			</br>
+
+			<div class="textarea-copiar-div">
+				<textarea id="ipt-base64-do-arquivo" placeholder="Base 64 do Arquivo" rows="10"
+					class="textarea-copiar"></textarea>
+				<button onclick="clickCopiarToClipboard(this)" class="btn-textarea">Copiar</button>
+			</div>
+
+		</div>
+
+		<div id="json-beautify" class="funcionalidade-container" hidden>
+			<h1>JSON Beautify</h1>
+
+			<textarea id="ipt-json-ugly" placeholder="JSON Ugly" rows="10"></textarea>
+
+			</br>
+			<button onclick="clickJSONBeautify()" style="margin-top: 20px; margin-bottom: 20px;">Beautify</button>
+			</br>
+
+			<div class="textarea-copiar-div">
+				<textarea id="ipt-json-beauty" placeholder="JSON Beauty" rows="30" class="textarea-copiar"></textarea>
+				<button onclick="clickCopiarToClipboard(this)" class="btn-textarea">Copiar</button>
+			</div>
+
+		</div>
+
+		<div id="xml-beautify" class="funcionalidade-container" hidden>
+			<h1>XML Beautify</h1>
+
+			<textarea id="ipt-xml-ugly" placeholder="XML Ugly" rows="10"></textarea>
+
+			</br>
+			<button onclick="clickXMLBeautify()" style="margin-top: 20px; margin-bottom: 20px;">Beautify</button>
+			</br>
+
+			<div class="textarea-copiar-div">
+				<textarea id="ipt-xml-beauty" placeholder="XML Beauty" rows="30" class="textarea-copiar"></textarea>
+				<button onclick="clickCopiarToClipboard(this)" class="btn-textarea">Copiar</button>
+			</div>
+
+		</div>
+
+		<div id="footer">
+			Desenvolvedor: josebarrospereira-dev	
+		</div>
+	</body>
+
+</html>
+
+<script>
+	// MENU
+	function abrirFuncionalidade(opcaoMenu, funcionalidadeId) {
+		let isOpcaoAberta = opcaoMenu.classList.contains("menu-ativo");
+		if (isOpcaoAberta) {
+			return;
+		}
+
+		focarOpcaoMenu(opcaoMenu);
+		exibirFuncionalidade(funcionalidadeId);
+	}
+
+	function focarOpcaoMenu(opcaoMenu) {
+		let opcaoSelecionadaAnteriormente = document.querySelector(".menu-ativo");
+		opcaoSelecionadaAnteriormente.classList.toggle("menu-ativo");
+		opcaoMenu.classList.toggle("menu-ativo");
+	}
+
+	function exibirFuncionalidade(funcionalidadeId) {
+		let funcionalidadeExibida = document.querySelector(".is-visible");
+		funcionalidadeExibida.hidden = true;
+		funcionalidadeExibida.classList.toggle("is-visible");
+
+		let funcionalidadeAExibir = document.getElementById(funcionalidadeId);
+		funcionalidadeAExibir.hidden = false;
+		funcionalidadeAExibir.classList.toggle("is-visible");
+	}
+
+	//BASE 64
+	function clickCodificar() {
+		let iptCodificar = document.getElementById("ipt-codificar");
+		let textoCodificar = iptCodificar.value;
+
+		if (!textoCodificar) {
+			return;
+		}
+
+		let iptDecodificar = document.getElementById("ipt-decodificar");
+		try {
+			let chkUTF8 = document.getElementById('UTF-8');
+
+			iptDecodificar.value = chkUTF8.checked
+				? codificarBase64UsandoUTF8(textoCodificar)
+				: btoa(textoCodificar);
+		} catch(e) {
+			iptDecodificar.value = "Erro inesperado!";
+		}
+	}
+
+	function codificarBase64UsandoUTF8(textoCodificar) {
+		return btoa(encodeURIComponent(textoCodificar).replace(/%([0-9A-F]{2})/g,
+			function toSolidBytes(match, p1) {
+				return String.fromCharCode('0x' + p1);
+		}));
+	}
+
+	function clickDecodificar() {
+		let iptDecodificar = document.getElementById("ipt-decodificar");
+		let textoDecodificar = iptDecodificar.value;
+
+		if (!textoDecodificar) {
+			return;
+		}
+		
+		let iptCodificar = document.getElementById("ipt-codificar");
+		try {			
+			let chkUTF8 = document.getElementById('UTF-8');
+
+			iptCodificar.value = chkUTF8.checked
+				? decodificarBase64UsandoUTF8(textoDecodificar)
+				: atob(textoDecodificar);
+		} catch(e) {
+			iptCodificar.value = "Erro inesperado!";
+		}
+	}
+
+	function decodificarBase64UsandoUTF8(textoDecodificar) {
+		return decodeURIComponent(atob(textoDecodificar).split('').map(function(c) {
+			return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+		}).join(''));
+	}
+
+	//BASE64 PARA ARQUIVO
+	function clickBase64ToArquivo() {
+		let iptArquivoBase64 = document.getElementById("ipt-arquivo-base64");
+		let valorArquivoBase64 = iptArquivoBase64.value;
+
+		let iptFormatoArquivo = document.getElementById("ipt-formato-arquivo-base64");
+		let valorFormatoArquivo = iptFormatoArquivo.value;
+
+		if (!valorFormatoArquivo) {
+			iptFormatoArquivo.value = "pdf";
+			valorFormatoArquivo = iptFormatoArquivo.value;
+		}
+
+		let iptNomeArquivo = document.getElementById("ipt-nome-arquivo-base64");
+		let valorNomeArquivo = iptNomeArquivo.value;
+
+		if (!valorNomeArquivo) {
+			iptNomeArquivo.value = "arquivo";
+			valorNomeArquivo = iptNomeArquivo.value;
+		}
+
+		let link = document.createElement('a');
+		link.innerHTML = 'Download PDF file';
+		link.download = valorNomeArquivo + '.' + valorFormatoArquivo;
+		link.href = 'data:application/octet-stream;base64,' + valorArquivoBase64;
+		link.click();
+	}
+
+	//ARQUIVO PARA BASE64
+	function clickArquivoToBase64() {
+		let iptArquivo = document.querySelector('#ipt-arquivo-para-base64');
+		let arquivo = iptArquivo.files[0];
+
+		toBase64(arquivo).then(result => {
+			let base64 = result.split(',')[1];
+			let iptBase64DoArquivo = document.querySelector('#ipt-base64-do-arquivo');
+			iptBase64DoArquivo.value = base64;
+		});
+	}
+
+	async function toBase64(file) {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = () => resolve(reader.result);
+			reader.onerror = reject;
+		});
+	}
+
+	// JSON BEAUTIFY
+	function clickJSONBeautify() {
+		let iptJsonUgly = document.getElementById("ipt-json-ugly");
+		let iptJsonUglyValue = iptJsonUgly.value;
+
+		if (!iptJsonUglyValue) {
+			return;
+		}
+
+		let jsonParsed = JSON.parse(iptJsonUglyValue);
+		let jsonBeauty = JSON.stringify(jsonParsed, null, 4);
+
+		let iptJsonBeauty = document.getElementById("ipt-json-beauty");
+		iptJsonBeauty.value = jsonBeauty;
+	}
+
+	// XML BEAUTIFY
+	function clickXMLBeautify() {
+		let iptXMLUgly = document.getElementById("ipt-xml-ugly");
+		let iptXMLUglyValue = iptXMLUgly.value;
+
+		if(!iptXMLUglyValue) {
+			return;
+		}
+
+		let xmlDoc = new DOMParser().parseFromString(iptXMLUglyValue, 'application/xml');
+		let xsltDoc = new DOMParser().parseFromString([
+			// describes how we want to modify the XML - indent everything
+			'<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform">',
+			'  <xsl:strip-space elements="*"/>',
+			'  <xsl:template match="para[content-style][not(text())]">', // change to just text() to strip space in text nodes
+			'    <xsl:value-of select="normalize-space(.)"/>',
+			'  </xsl:template>',
+			'  <xsl:template match="node()|@*">',
+			'    <xsl:copy><xsl:apply-templates select="node()|@*"/></xsl:copy>',
+			'  </xsl:template>',
+			'  <xsl:output indent="yes"/>',
+			'</xsl:stylesheet>',
+		].join('\n'), 'application/xml');
+
+		let xsltProcessor = new XSLTProcessor();    
+		xsltProcessor.importStylesheet(xsltDoc);
+		let resultDoc = xsltProcessor.transformToDocument(xmlDoc);
+		let resultXml = new XMLSerializer().serializeToString(resultDoc);
+		
+		let iptXMLBeauty = document.getElementById("ipt-xml-beauty");
+		iptXMLBeauty.value = resultXml;
+	}
+
+	//CLIPBOARD
+	function clickCopiarToClipboard(btnCopiar) {
+		let textareaContainer = btnCopiar.parentElement;
+		let textarea = textareaContainer.querySelector("textarea");
+		let value = textarea.value;
+
+		navigator.clipboard.writeText(value);
+	}
+</script>
+
+<style>
+	body {
+		margin: 0px;
+		margin-bottom: 25px;
+	}
+
+	.menu-ativo {
+		background-color: #3d9041;
+	}
+
+	.menu-horizontal>a {
+		float: left;
+		display: block;
+		color: #f2f2f2;
+		text-align: center;
+		padding: 14px 16px;
+		text-decoration: none;
+		font-size: 17px;
+		cursor: pointer;
+	}
+
+	.menu-horizontal {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+		overflow: hidden;
+		background-color: #333;
+	}
+
+	.funcionalidade-container {
+		text-align: center;
+	}
+
+	.textarea-copiar-div {
+		display: inline-block;
+		position: relative;
+		width: 90%;
+	}
+
+	.textarea-copiar {
+		display: block;
+		width: 100%;
+	}
+
+	.btn-textarea {
+		position: absolute;
+		bottom: 10px;
+		right: 25px;
+	}
+
+	textarea {
+		width: 90%;
+	}
+
+	#footer {
+		text-align: center;
+		padding-top: 25px;
+		font-weight: bold;
+	}
+
+	h1 {
+		color: #3d9041;
+	}
+</style>
