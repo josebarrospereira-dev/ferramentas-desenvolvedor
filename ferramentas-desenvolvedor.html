@@ -7,15 +7,18 @@
 
 	<body>
 		<div class="menu-horizontal">
-			<a class="menu-ativo" onclick="abrirFuncionalidade(this, 'base64-codificar-decodificar')">Base 64</a>
-			<a onclick="abrirFuncionalidade(this, 'base64-decodificar-arquivo')">Base 64 - Arquivo</a>
-			<a onclick="abrirFuncionalidade(this, 'arquivo-para-base64')">Arquivo - Base 64</a>
+			<a class="menu-ativo" onclick="abrirFuncionalidade(this, 'base64-codificar-decodificar')">Base 64 Codificar
+				e Decodificar</a>
+			<a onclick="abrirFuncionalidade(this, 'base64-decodificar-arquivo')">Base 64 para Arquivo</a>
+			<a onclick="abrirFuncionalidade(this, 'arquivo-para-base64')">Arquivo para Base 64</a>
 			<a onclick="abrirFuncionalidade(this, 'json-beautify')">JSON Beautify</a>
 			<a onclick="abrirFuncionalidade(this, 'xml-beautify')">XML Beautify</a>
+			<a onclick="abrirFuncionalidade(this, 'arquivo-bytearray')">ByteArray para Arquivo</a>
+			<a onclick="abrirFuncionalidade(this, 'bytearray-arquivo')">Arquivo para ByteArray</a>
 		</div>
 
 		<div id="base64-codificar-decodificar" class="is-visible funcionalidade-container">
-			<h1>Base 64</h1>
+			<h1>Base 64 Codificar e Decodificar</h1>
 
 			<div class="textarea-copiar-div">
 				<textarea id="ipt-codificar" placeholder="Codificar" name="Codificar" rows="10"
@@ -25,7 +28,7 @@
 
 			</br>
 			<input type="checkbox" id="UTF-8" name="UTF-8" checked style="margin-top: 20px; margin-bottom: 10px;"/>
-    		<label for="UTF-8">Converter em UTF-8</label>
+			<label for="UTF-8">Converter em UTF-8</label>
 
 			</br>
 			<div>
@@ -110,8 +113,45 @@
 
 		</div>
 
+		<div id="arquivo-bytearray" class="funcionalidade-container" hidden>
+			<h1>ByteArray para Arquivo</h1>
+
+			<textarea id="ipt-arquivo-bytearray" placeholder="Cole o ByteArray aqui (valores separados por vírgula)" rows="10"></textarea>
+
+			</br>
+			<div style="text-align: center;">
+				<div style="display: inline-block; text-align: left;">
+					Nome: <input id="ipt-nome-arquivo-bytearray" placeholder="arquivo" style="margin-top: 10px;">
+					</br>
+					Formato: <input id="ipt-formato-arquivo-bytearray" style="margin-top: 10px;" placeholder="pdf">
+				</div>
+			</div>
+
+			<button onclick="clickByteArrayToArquivo()" style="margin-top: 20px; margin-bottom: 20px;">Baixar
+				Arquivo</button>
+			</br>
+		</div>
+
+		<div id="bytearray-arquivo" class="funcionalidade-container" hidden>
+			<h1>Arquivo para ByteArray</h1>
+
+			<input id="ipt-arquivo-para-bytearray" type="file" style="margin-top: 10px;">
+
+			</br>
+			<button onclick="clickArquivoToByteArray()" style="margin-top: 20px; margin-bottom: 20px;">Converter
+				arquivo</button>
+			</br>
+
+			<div class="textarea-copiar-div">
+				<textarea id="ipt-bytearray-do-arquivo" placeholder="ByteArray do Arquivo" rows="10"
+					class="textarea-copiar"></textarea>
+				<button onclick="clickCopiarToClipboard(this)" class="btn-textarea">Copiar</button>
+			</div>
+
+		</div>
+
 		<div id="footer">
-			Desenvolvedor: josebarrospereira-dev	
+			Desenvolvedor: jose.dsn.pack
 		</div>
 	</body>
 
@@ -145,7 +185,8 @@
 		funcionalidadeAExibir.classList.toggle("is-visible");
 	}
 
-	//BASE 64
+
+	//BASE 64 CODIFICAR E DECODIFICAR
 	function clickCodificar() {
 		let iptCodificar = document.getElementById("ipt-codificar");
 		let textoCodificar = iptCodificar.value;
@@ -180,9 +221,9 @@
 		if (!textoDecodificar) {
 			return;
 		}
-		
+
 		let iptCodificar = document.getElementById("ipt-codificar");
-		try {			
+		try {
 			let chkUTF8 = document.getElementById('UTF-8');
 
 			iptCodificar.value = chkUTF8.checked
@@ -198,6 +239,7 @@
 			return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
 		}).join(''));
 	}
+
 
 	//BASE64 PARA ARQUIVO
 	function clickBase64ToArquivo() {
@@ -227,6 +269,7 @@
 		link.click();
 	}
 
+
 	//ARQUIVO PARA BASE64
 	function clickArquivoToBase64() {
 		let iptArquivo = document.querySelector('#ipt-arquivo-para-base64');
@@ -248,6 +291,7 @@
 		});
 	}
 
+
 	// JSON BEAUTIFY
 	function clickJSONBeautify() {
 		let iptJsonUgly = document.getElementById("ipt-json-ugly");
@@ -264,6 +308,7 @@
 		iptJsonBeauty.value = jsonBeauty;
 	}
 
+
 	// XML BEAUTIFY
 	function clickXMLBeautify() {
 		let iptXMLUgly = document.getElementById("ipt-xml-ugly");
@@ -275,10 +320,9 @@
 
 		let xmlDoc = new DOMParser().parseFromString(iptXMLUglyValue, 'application/xml');
 		let xsltDoc = new DOMParser().parseFromString([
-			// describes how we want to modify the XML - indent everything
 			'<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform">',
 			'  <xsl:strip-space elements="*"/>',
-			'  <xsl:template match="para[content-style][not(text())]">', // change to just text() to strip space in text nodes
+			'  <xsl:template match="para[content-style][not(text())]">',
 			'    <xsl:value-of select="normalize-space(.)"/>',
 			'  </xsl:template>',
 			'  <xsl:template match="node()|@*">',
@@ -288,14 +332,90 @@
 			'</xsl:stylesheet>',
 		].join('\n'), 'application/xml');
 
-		let xsltProcessor = new XSLTProcessor();    
+		let xsltProcessor = new XSLTProcessor();
 		xsltProcessor.importStylesheet(xsltDoc);
 		let resultDoc = xsltProcessor.transformToDocument(xmlDoc);
 		let resultXml = new XMLSerializer().serializeToString(resultDoc);
-		
+
 		let iptXMLBeauty = document.getElementById("ipt-xml-beauty");
 		iptXMLBeauty.value = resultXml;
 	}
+
+
+	//ARQUIVO PARA BYTE ARRAY
+	function clickArquivoToByteArray() {
+		let iptArquivo = document.querySelector('#ipt-arquivo-para-bytearray');
+		let arquivo = iptArquivo.files[0];
+
+		if (!arquivo) {
+			return;
+		}
+
+		toByteArray(arquivo).then(result => {
+			let iptByteArrayDoArquivo = document.querySelector('#ipt-bytearray-do-arquivo');
+			iptByteArrayDoArquivo.value = result;
+		});
+	}
+
+	async function toByteArray(file) {
+		return new Promise((resolve, reject) => {
+			var reader = new FileReader();
+			reader.readAsArrayBuffer(file);
+			reader.onload = function() {
+				var arrayBuffer = reader.result;
+				var bytes = new Uint8Array(arrayBuffer);
+				resolve(bytes.toString());
+			}
+			reader.onerror = reject;
+		});
+	}
+
+
+	//BYTE ARRAY PARA ARQUIVO
+	function clickByteArrayToArquivo() {
+		let iptByteArray = document.getElementById("ipt-arquivo-bytearray");
+		let valorByteArray = iptByteArray.value;
+
+		if (!valorByteArray) {
+			return;
+		}
+
+		let iptFormatoArquivo = document.getElementById("ipt-formato-arquivo-bytearray");
+		let valorFormatoArquivo = iptFormatoArquivo.value;
+
+		if (!valorFormatoArquivo) {
+			iptFormatoArquivo.value = "pdf";
+			valorFormatoArquivo = iptFormatoArquivo.value;
+		}
+
+		let iptNomeArquivo = document.getElementById("ipt-nome-arquivo-bytearray");
+		let valorNomeArquivo = iptNomeArquivo.value;
+
+		if (!valorNomeArquivo) {
+			iptNomeArquivo.value = "arquivo";
+			valorNomeArquivo = iptNomeArquivo.value;
+		}
+
+		try {
+			let byteValues = valorByteArray.split(',').map(function(val) {
+				return parseInt(val.trim(), 10);
+			});
+
+			let byteArray = new Uint8Array(byteValues);
+			let blob = new Blob([byteArray], { type: 'application/octet-stream' });
+			let url = URL.createObjectURL(blob);
+
+			let link = document.createElement('a');
+			link.download = valorNomeArquivo + '.' + valorFormatoArquivo;
+			link.href = url;
+			link.click();
+
+			URL.revokeObjectURL(url);
+		} catch(e) {
+			alert("Erro ao converter ByteArray para arquivo. Verifique o formato dos dados.");
+		}
+	}
+
 
 	//CLIPBOARD
 	function clickCopiarToClipboard(btnCopiar) {

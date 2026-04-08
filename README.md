@@ -38,6 +38,16 @@ Este projeto é uma ferramenta de utilitários para desenvolvedores implementada
    - Converte para XML estruturado com identação.
    - Resultado com botão copiar.
 
+6. ByteArray para Arquivo
+   - Recebe ByteArray (valores inteiros separados por vírgula).
+   - Define nome e extensão (padrão: arquivo.pdf).
+   - Gera download do arquivo reconstruído.
+
+7. Arquivo para ByteArray
+   - Seleciona arquivo local.
+   - Converte o arquivo em ByteArray.
+   - Exibe o resultado em textarea com botão copiar.
+
 ## Uso
 
 1. Abra ferramentas-desenvolvedor.html no navegador.
